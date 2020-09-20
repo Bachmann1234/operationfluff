@@ -1,0 +1,26 @@
+language: python
+python: "3.8"
+dist: xenial
+
+stages:
+  - lint
+  - test
+
+cache:
+  pip: true
+
+jobs:
+  include:
+    - stage: lint
+      install:
+        - pip install black
+      script:
+        - black .
+    - stage: test
+      install:
+        - pip install --upgrade pip
+        - pip install poetry
+        - poetry install -v
+      script:
+        - pytest --cov
+
