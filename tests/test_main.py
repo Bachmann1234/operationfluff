@@ -80,9 +80,9 @@ def test_send_dogs_success(example_config, mocker):
         call(
             [example_dog],
             TEXT_SUBSCRIBERS.split(","),
+            TWILIO_PHONE,
             TWILIO_SID,
             TWILIO_AUTH,
-            TWILIO_PHONE,
         ),
         call().__iter__(),
     ]

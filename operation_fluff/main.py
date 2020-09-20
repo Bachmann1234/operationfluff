@@ -44,9 +44,9 @@ def send_dogs(dogs: List[Dog], config: Config) -> None:
         text_results = text_dogs(
             dogs,
             config.text_subscribers,
+            config.twilio_phone,
             config.twilio_sid,
             config.twilio_auth,
-            config.twilio_phone,
         )
         print(f"Messages sent {','.join(text_results)}")
 
