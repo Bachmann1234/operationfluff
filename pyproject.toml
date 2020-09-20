@@ -5,7 +5,7 @@ description = ""
 authors = ["Matt Bachmann <bachmann.matt@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "3.8.1"
 sendgrid = "^6.4.7"
 requests = "^2.24.0"
 pytz = "^2020.1"
