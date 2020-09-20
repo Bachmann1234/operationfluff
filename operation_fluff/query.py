@@ -1,4 +1,3 @@
-import json
 from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
 
@@ -20,7 +19,7 @@ def format_dog(dog):
         breed=dog["breeds_label"],
         age=dog["age"],
         name=dog["name"],
-        photo=dog["primary_photo_url"],
+        photo=dog["primary_photo_cropped_url"],
         profile_url=dog["social_sharing"]["email_url"],
         published_at=datetime.strptime(dog["published_at"], "%Y-%m-%dT%H:%M:%S%z"),
     )
