@@ -408,9 +408,9 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "3cf1eb542e1d4f6cffd64d4247268633370130d7421290421fafdbd1d02defb0"
+content-hash = "d674dac94925449ed12811905eafec1ced10f36c3ac22538b5d05f778ce37fd7"
 lock-version = "1.0"
-python-versions = "^3.8"
+python-versions = "3.8.1"
 
 [metadata.files]
 appdirs = [
