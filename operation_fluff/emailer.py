@@ -52,8 +52,19 @@ def email_dogs(dogs: List[Dog], from_email: str, to_emails: List[str], api_key: 
         subject="New Dogs!",
         html_content=email_template.render(dogs=dogs),
     )
-    try:
-        sg = SendGridAPIClient(api_key)
-        return sg.send(message)
-    except Exception as e:
-        print(str(e))
+    return _send(message, api_key)
+
+
+def email_error(message: str, from_email: str, to_emails: List[str], api_key):
+    message = Mail(
+        from_email=from_email,
+        to_emails=to_emails,
+        subject="Operation Fluff Error",
+        plain_text_content=message,
+    )
+    return _send(message, api_key)
+
+
+def _send(message: Mail, api_key: str):
+    sg = SendGridAPIClient(api_key)
+    return sg.send(message)
