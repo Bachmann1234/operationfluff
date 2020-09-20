@@ -66,5 +66,4 @@ def email_error(message: str, from_email: str, to_emails: List[str], api_key):
 
 
 def _send(message: Mail, api_key: str):
-    sg = SendGridAPIClient(api_key)
-    return sg.send(message)
+    return SendGridAPIClient(api_key).send(message)

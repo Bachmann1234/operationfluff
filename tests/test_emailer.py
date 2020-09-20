@@ -1,9 +1,59 @@
 import datetime
-
-from freezegun import freeze_time
+from unittest.mock import call
 
 from operation_fluff.dog_finder import Dog
-from operation_fluff.emailer import email_template
+from operation_fluff.emailer import email_template, email_dogs, email_error
+
+
+def test_email_error(mocker) -> None:
+    client_mock = mocker.patch("operation_fluff.emailer.SendGridAPIClient")
+    email_error("OMG NO", "from@from.com", ["to@to.com"], "apikey")
+    assert len(client_mock.mock_calls) == 2
+    assert client_mock.mock_calls[0] == call("apikey")
+    email_sent = client_mock.mock_calls[1].args[0]
+    assert email_sent.from_email.email == "from@from.com"
+    assert email_sent.subject.subject == "Operation Fluff Error"
+    assert email_sent.contents[0].content == "OMG NO"
+    assert email_sent.contents[0].mime_type == "text/plain"
+    assert email_sent.personalizations[0].tos == [{"email": "to@to.com"}]
+
+
+def test_email_dogs(mocker) -> None:
+    dogs = [
+        Dog(
+            breed="Bernese Mountain Dog",
+            age="Young",
+            name="Mr. Charlie",
+            photo="https://example.com/photo",
+            profile_url="https://example.com/profile",
+            published_at=datetime.datetime(
+                2020, 9, 19, 18, 2, 43, tzinfo=datetime.timezone.utc
+            ),
+        ),
+        Dog(
+            breed="Newfoundland",
+            age="Young",
+            name="Jupiter",
+            photo="https://example.com/photo",
+            profile_url="https://example.com/profile",
+            published_at=datetime.datetime(
+                2020, 9, 19, 18, 2, 43, tzinfo=datetime.timezone.utc
+            ),
+        ),
+    ]
+    client_mock = mocker.patch("operation_fluff.emailer.SendGridAPIClient")
+    email_dogs(dogs, "from@from.com", ["to@to.com", "alsoTo@to.com"], "apikey")
+    assert len(client_mock.mock_calls) == 2
+    assert client_mock.mock_calls[0] == call("apikey")
+    email_sent = client_mock.mock_calls[1].args[0]
+    assert email_sent.from_email.email == "from@from.com"
+    assert email_sent.subject.subject == "New Dogs!"
+    assert email_sent.contents[0].content == email_template.render(dogs=dogs)
+    assert email_sent.contents[0].mime_type == "text/html"
+    assert email_sent.personalizations[0].tos == [
+        {"email": "to@to.com"},
+        {"email": "alsoTo@to.com"},
+    ]
 
 
 def test_template() -> None:

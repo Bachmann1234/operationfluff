@@ -3,26 +3,52 @@ from dataclasses import dataclass
 from typing import List
 
 from operation_fluff.emailer import email_dogs, email_error
-from operation_fluff.dog_finder import find_new_dogs
+from operation_fluff.dog_finder import find_new_dogs, Dog
+from operation_fluff.texter import text_dogs
 
 
 @dataclass
 class Config:
     time_between_runs: int
     sender: str
-    receivers: List[str]
+    email_subscribers: List[str]
+    text_subscribers: List[str]
     sendgrid_api_key: str
     admin_email: str
+    twilio_sid: str
+    twilio_auth: str
+    twilio_phone: str
 
 
 def load_config() -> Config:
     return Config(
         time_between_runs=int(os.environ["TIME_BETWEEN_RUNS"]),
         sender=os.environ["SENDER"],
-        receivers=os.environ["RECEIVER"].split(","),
+        email_subscribers=os.environ["EMAIL_SUBSCRIBERS"].split(","),
+        text_subscribers=os.environ["TEXT_SUBSCRIBERS"].split(","),
         sendgrid_api_key=os.environ["SENDGRID_API_KEY"],
         admin_email=os.environ["ADMIN_EMAIL"],
+        twilio_sid=os.environ["TWILIO_SID"],
+        twilio_auth=os.environ["TWILIO_AUTH"],
+        twilio_phone=os.environ["TWILIO_PHONE"],
     )
+
+
+def send_dogs(dogs: List[Dog], config: Config) -> None:
+    if config.email_subscribers:
+        email_result = email_dogs(
+            dogs, config.sender, config.email_subscribers, config.sendgrid_api_key
+        )
+        print(f"email request status: {email_result.status_code}")
+    if config.text_subscribers:
+        text_results = text_dogs(
+            dogs,
+            config.text_subscribers,
+            config.twilio_sid,
+            config.twilio_auth,
+            config.twilio_phone,
+        )
+        print(f"Messages sent {','.join(text_results)}")
 
 
 def main() -> None:
@@ -32,10 +58,7 @@ def main() -> None:
         print(f"I found {len(dogs)} new dogs!")
         if dogs:
             print("Sending new dogs")
-            result = email_dogs(
-                dogs, config.sender, config.receivers, config.sendgrid_api_key
-            )
-            print(f"email request status: {result.status_code}")
+            send_dogs(dogs, config)
     except Exception as e:
         print(f"Failed to query/message dogs ({str(e)})")
         email_error(
