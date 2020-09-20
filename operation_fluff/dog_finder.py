@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
+from typing import Dict, Generator
 
 import requests
 
@@ -14,7 +15,7 @@ class Dog:
     published_at: datetime
 
 
-def format_dog(dog):
+def format_dog(dog: Dict) -> Dog:
     return Dog(
         breed=dog["breeds_label"],
         age=dog["age"],
@@ -25,7 +26,7 @@ def format_dog(dog):
     )
 
 
-def get_dogs(limit=300):
+def get_dogs(limit: int = 300) -> Generator[Dog, None, None]:
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) Gecko/20100101 Firefox/80.0",
         "Accept": "application/json, text/plain, */*",
@@ -38,18 +39,18 @@ def get_dogs(limit=300):
 
     while page != total_pages:
         page += 1
-        params = (
-            ("page", str(page)),
-            ("limit[]", str(limit)),
-            ("status", "adoptable"),
-            ("distance[]", "100"),
-            ("type[]", "dogs"),
-            ("sort[]", "nearest"),
-            ("age[]", ["Adult", "Baby", "Young"]),
-            ("coat_length[]", ["Long", "Medium"]),
-            ("location_slug[]", "us/ma/02144"),
-            ("include_transportable", "true"),
-        )
+        params = {
+            "page": str(page),
+            "limit[]": str(limit),
+            "status": "adoptable",
+            "distance[]": "100",
+            "type[]": "dogs",
+            "sort[]": "nearest",
+            "age[]": ["Adult", "Baby", "Young"],
+            "coat_length[]": ["Long", "Medium"],
+            "location_slug[]": "us/ma/02144",
+            "include_transportable": "true",
+        }
 
         response = requests.get(
             "https://www.petfinder.com/search/", headers=headers, params=params
@@ -60,7 +61,7 @@ def get_dogs(limit=300):
             yield format_dog(animal["animal"])
 
 
-def find_new_dogs(since_mins=10):
+def find_new_dogs(since_mins: int = 10) -> Generator[Dog, None, None]:
     cutoff_time = datetime.now(timezone.utc) - timedelta(minutes=since_mins)
     for dog in get_dogs():
         if dog.published_at > cutoff_time:

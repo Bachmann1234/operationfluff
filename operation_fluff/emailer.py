@@ -1,7 +1,10 @@
-import os
+from typing import List
+
 from jinja2 import Template
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+
+from operation_fluff.dog_finder import Dog
 
 email_template = Template(
     """
@@ -42,18 +45,15 @@ email_template = Template(
 )
 
 
-def email_dogs(dogs):
-    if not dogs:
-        print("No new dogs!")
-        return
+def email_dogs(dogs: List[Dog], from_email: str, to_emails: List[str], api_key: str):
     message = Mail(
-        from_email=os.environ.get("SENDER"),
-        to_emails=os.environ.get("RECEIVER").split(","),
+        from_email=from_email,
+        to_emails=to_emails,
         subject="New Dogs!",
         html_content=email_template.render(dogs=dogs),
     )
     try:
-        sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
+        sg = SendGridAPIClient(api_key)
         return sg.send(message)
     except Exception as e:
-        print(e.message)
+        print(str(e))
