@@ -43,7 +43,7 @@ def get_dogs(limit: int = 300) -> Generator[Dog, None, None]:
             "page": str(page),
             "limit[]": str(limit),
             "status": "adoptable",
-            "distance[]": "100",
+            "distance[]": "150",
             "type[]": "dogs",
             "sort[]": "nearest",
             "age[]": ["Adult", "Baby", "Young"],

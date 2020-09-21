@@ -15,7 +15,7 @@ interactions:
       X-Requested-With:
       - XMLHttpRequest
     method: GET
-    uri: https://www.petfinder.com/search/?page=1&limit%5B%5D=300&status=adoptable&distance%5B%5D=100&type%5B%5D=dogs&sort%5B%5D=nearest&age%5B%5D=Adult&age%5B%5D=Baby&age%5B%5D=Young&coat_length%5B%5D=Long&coat_length%5B%5D=Medium&location_slug%5B%5D=us%2Fma%2F02144&include_transportable=true
+    uri: https://www.petfinder.com/search/?page=1&limit%5B%5D=300&status=adoptable&distance%5B%5D=150&type%5B%5D=dogs&sort%5B%5D=nearest&age%5B%5D=Adult&age%5B%5D=Baby&age%5B%5D=Young&coat_length%5B%5D=Long&coat_length%5B%5D=Medium&location_slug%5B%5D=us%2Fma%2F02144&include_transportable=true
   response:
     body:
       string: !!binary |
