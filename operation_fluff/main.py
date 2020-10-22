@@ -36,19 +36,26 @@ def load_config() -> Config:
 
 def send_dogs(dogs: List[Dog], config: Config) -> None:
     if config.email_subscribers:
-        email_result = email_dogs(
-            dogs, config.sender, config.email_subscribers, config.sendgrid_api_key
-        )
-        print(f"email request status: {email_result.status_code}")
+        try:
+            email_result = email_dogs(
+                dogs, config.sender, config.email_subscribers, config.sendgrid_api_key
+            )
+            print(f"email request status: {email_result.status_code}")
+        except Exception as e:
+            print(f"Failed to email dogs f{e}")
+
     if config.text_subscribers:
-        text_results = text_dogs(
-            dogs,
-            config.text_subscribers,
-            config.twilio_phone,
-            config.twilio_sid,
-            config.twilio_auth,
-        )
-        print(f"Messages sent {','.join(text_results)}")
+        try:
+            text_results = text_dogs(
+                dogs,
+                config.text_subscribers,
+                config.twilio_phone,
+                config.twilio_sid,
+                config.twilio_auth,
+            )
+            print(f"Messages sent {','.join(text_results)}")
+        except Exception as e:
+            print(f"Failed to text dogs f{e}")
 
 
 def main() -> None:

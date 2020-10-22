@@ -66,3 +66,8 @@ def find_new_dogs(since_mins: int = 10) -> Generator[Dog, None, None]:
     for dog in get_dogs():
         if dog.published_at > cutoff_time:
             yield dog
+
+if __name__ == "__main__":
+    from pprint import pprint
+    for dog in find_new_dogs(1440):
+        pprint(dog)
