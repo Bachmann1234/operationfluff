@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
 from typing import Dict, Generator
@@ -16,11 +17,15 @@ class Dog:
 
 
 def format_dog(dog: Dict) -> Dog:
+    photo = dog.get("primary_photo_cropped_url")
+    if not photo:
+        # I wanna see if I have an alternative if there is no dog
+        print(json.dumps(dog, indent=4))
     return Dog(
         breed=dog["breeds_label"],
         age=dog["age"],
         name=dog["name"],
-        photo=dog["primary_photo_cropped_url"],
+        photo=photo,
         profile_url=dog["social_sharing"]["email_url"],
         published_at=datetime.strptime(dog["published_at"], "%Y-%m-%dT%H:%M:%S%z"),
     )
