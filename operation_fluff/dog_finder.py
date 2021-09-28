@@ -60,6 +60,7 @@ def get_dogs(limit: int = 300) -> Generator[Dog, None, None]:
         response = requests.get(
             "https://www.petfinder.com/search/", headers=headers, params=params
         )
+        response.raise_for_status()
         result = response.json()["result"]
         total_pages = result["pagination"]["total_pages"]
         for animal in result.get("animals", []):
@@ -68,9 +69,10 @@ def get_dogs(limit: int = 300) -> Generator[Dog, None, None]:
 
 def find_new_dogs(since_mins: int = 10) -> Generator[Dog, None, None]:
     cutoff_time = datetime.now(timezone.utc) - timedelta(minutes=since_mins)
-    for dog in get_dogs():
-        if dog.published_at > cutoff_time:
-            yield dog
+    for d in get_dogs():
+        if d.published_at > cutoff_time:
+            yield d
+
 
 if __name__ == "__main__":
     from pprint import pprint
