@@ -77,19 +77,27 @@ def get_dogs(limit: int = 300) -> Generator[Dog, None, None]:
 
 def find_new_dogs(since_mins: int = 10, redis_cache: Redis = None) -> List[Dog]:
     cutoff_time = datetime.now(timezone.utc) - timedelta(minutes=since_mins)
-    dogs = []
+    new_dogs = []
     seen = set()
-    for potential_dog in get_dogs():
+    try:
+        retrieved_dogs = get_dogs()
+    except HTTPError as e:
+        print(e)
+        if e.response.status_code < 500:
+            raise
+        retrieved_dogs = []
+
+    for potential_dog in retrieved_dogs:
         if (
             potential_dog.published_at > cutoff_time
             and potential_dog.profile_url not in seen
         ):
             if not redis_cache or redis_cache.get(potential_dog.profile_url) is None:
-                dogs.append(potential_dog)
+                new_dogs.append(potential_dog)
                 seen.add(potential_dog.profile_url)
                 if redis_cache:
                     redis_cache.set(potential_dog.profile_url, ex=86400, value="seen")
-    return dogs
+    return new_dogs
 
 
 if __name__ == "__main__":
