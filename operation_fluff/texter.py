@@ -28,7 +28,7 @@ def text_dogs(
             message = client.messages.create(
                 body=body,
                 from_=from_number,
-                media_url=photo_url,
+                media_url=[photo_url],
                 to=number,
             )
             sent_message_ids.append(message.sid)
