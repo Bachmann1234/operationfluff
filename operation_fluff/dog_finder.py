@@ -4,6 +4,8 @@ from datetime import datetime, timezone, timedelta
 from typing import Dict, Generator
 
 import requests
+from requests import HTTPError
+from retry import retry
 
 
 @dataclass
@@ -31,6 +33,7 @@ def format_dog(dog: Dict) -> Dog:
     )
 
 
+@retry(HTTPError, tries=3, delay=1, backoff=2, jitter=1)
 def get_dogs(limit: int = 300) -> Generator[Dog, None, None]:
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) Gecko/20100101 Firefox/80.0",
