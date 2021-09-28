@@ -72,7 +72,7 @@ def test_template() -> None:
             breed="Anatolian Shepherd & Border Collie Mix",
             age="Young",
             name="Buddy - local boy",
-            photo="https://dl5zpyw5k3jeb.cloudfront.net/photos/pets/49149083/4/?bust=1600530983",
+            photo="",
             profile_url="https://www.petfinder.com/dog/buddy-local-boy-49149083/ma/andover/great-dog-rescue-new-england-ma224/",
             published_at=datetime.datetime(
                 2020, 9, 19, 15, 56, 29, tzinfo=datetime.timezone.utc
@@ -83,7 +83,8 @@ def test_template() -> None:
     assert (
         email_template.render(dogs=dogs)
         == """
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="https://www.w3.org/1999/xhtml">
 <head>
 <title>Test Email Sample</title>
@@ -107,10 +108,12 @@ def test_template() -> None:
     <div>
         Adult
     </div>
-    
+
     <div>
         <a href="https://www.petfinder.com/dog/leo-49150408/ma/andover/great-dog-rescue-new-england-ma224/">
+            
             <img src="https://dl5zpyw5k3jeb.cloudfront.net/photos/pets/49150408/6/?bust=1600538556">
+            
         </a>
     </div>
     <hr/>
@@ -124,10 +127,12 @@ def test_template() -> None:
     <div>
         Young
     </div>
-    
+
     <div>
         <a href="https://www.petfinder.com/dog/buddy-local-boy-49149083/ma/andover/great-dog-rescue-new-england-ma224/">
-            <img src="https://dl5zpyw5k3jeb.cloudfront.net/photos/pets/49149083/4/?bust=1600530983">
+            
+            Buddy - local boy's Profile
+            
         </a>
     </div>
     <hr/>

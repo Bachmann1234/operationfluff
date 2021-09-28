@@ -8,7 +8,8 @@ from operation_fluff.dog_finder import Dog
 
 email_template = Template(
     """
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="https://www.w3.org/1999/xhtml">
 <head>
 <title>Test Email Sample</title>
@@ -32,10 +33,14 @@ email_template = Template(
     <div>
         {{dog.age}}
     </div>
-    
+
     <div>
         <a href="{{dog.profile_url}}">
+            {% if dog.photo %}
             <img src="{{dog.photo}}">
+            {% else %}
+            {{dog.name}}'s Profile
+            {% endif %}
         </a>
     </div>
     <hr/>
