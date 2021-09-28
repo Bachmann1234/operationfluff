@@ -581,8 +581,8 @@ multidict = ">=4.0"
 
 [metadata]
 lock-version = "1.1"
-python-versions = "3.9.0"
-content-hash = "b1fb26442a5330f3303e5e80633789c5dfc05a43b5918a0117a2a32031bce73e"
+python-versions = "3.9.7"
+content-hash = "3eba00e16a350dc279825d2c9b237fa97a41cb94289736ed96787db622a06eb2"
 
 [metadata.files]
 atomicwrites = [
