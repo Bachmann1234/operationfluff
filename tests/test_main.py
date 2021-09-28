@@ -1,10 +1,11 @@
 import datetime
 from unittest.mock import call
 
+import fakeredis
 import pytest
 
 from operation_fluff.dog_finder import Dog
-from operation_fluff.main import load_config, Config, main
+from operation_fluff.main import Config, load_config, main
 
 ADMIN_EMAIL = "person@person.com"
 TIME_BETWEEN_RUNS = "10"
@@ -47,6 +48,7 @@ def test_load_config(example_config) -> None:
 
 
 def test_send_dogs_success(example_config, mocker):
+    redis = fakeredis.FakeStrictRedis()
     example_dog = Dog(
         breed="Bernese Mountain Dog",
         age="Young",
@@ -64,7 +66,7 @@ def test_send_dogs_success(example_config, mocker):
         "operation_fluff.main.find_new_dogs",
         return_value=[example_dog],
     )
-    main()
+    main(redis)
     assert len(email_dogs_mock.mock_calls) == 2
     assert email_dogs_mock.mock_calls[0] == call(
         [example_dog],
@@ -86,10 +88,13 @@ def test_send_dogs_success(example_config, mocker):
         ),
         call().__iter__(),
     ]
-    assert find_new_dogs_mock.mock_calls == [call(since_mins=int(TIME_BETWEEN_RUNS))]
+    assert find_new_dogs_mock.mock_calls == [
+        call(since_mins=int(TIME_BETWEEN_RUNS), redis_cache=redis)
+    ]
 
 
 def test_send_dogs_no_dogs(example_config, mocker):
+    redis = fakeredis.FakeStrictRedis()
     email_dogs_mock = mocker.patch("operation_fluff.main.email_dogs")
     email_error_mock = mocker.patch("operation_fluff.main.email_error")
     text_mock = mocker.patch("operation_fluff.main.text_dogs")
@@ -97,14 +102,17 @@ def test_send_dogs_no_dogs(example_config, mocker):
         "operation_fluff.main.find_new_dogs",
         return_value=[],
     )
-    main()
+    main(redis)
     assert len(email_dogs_mock.mock_calls) == 0
     assert email_error_mock.mock_calls == []
     assert text_mock.mock_calls == []
-    assert find_new_dogs_mock.mock_calls == [call(since_mins=int(TIME_BETWEEN_RUNS))]
+    assert find_new_dogs_mock.mock_calls == [
+        call(since_mins=int(TIME_BETWEEN_RUNS), redis_cache=redis)
+    ]
 
 
 def test_send_dogs_fail(example_config, mocker):
+    redis = fakeredis.FakeStrictRedis()
     error_message = "OMG ERROR"
     email_dogs_mock = mocker.patch("operation_fluff.main.email_dogs")
     email_error_mock = mocker.patch("operation_fluff.main.email_error")
@@ -113,10 +121,12 @@ def test_send_dogs_fail(example_config, mocker):
         "operation_fluff.main.find_new_dogs",
         side_effect=ValueError(error_message),
     )
-    main()
+    main(redis)
     assert len(email_dogs_mock.mock_calls) == 0
     assert email_error_mock.mock_calls == [
         call(error_message, SENDER, ADMIN_EMAIL.split(","), SENDGRID_API_KEY),
     ]
     assert text_mock.mock_calls == []
-    assert find_new_dogs_mock.mock_calls == [call(since_mins=int(TIME_BETWEEN_RUNS))]
+    assert find_new_dogs_mock.mock_calls == [
+        call(since_mins=int(TIME_BETWEEN_RUNS), redis_cache=redis)
+    ]

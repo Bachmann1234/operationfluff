@@ -2,7 +2,7 @@ import datetime
 from unittest.mock import call
 
 from operation_fluff.dog_finder import Dog
-from operation_fluff.emailer import email_template, email_dogs, email_error
+from operation_fluff.emailer import email_dogs, email_error, email_template
 
 
 def test_email_error(mocker) -> None:

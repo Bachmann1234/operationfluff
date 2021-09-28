@@ -2,8 +2,11 @@ import os
 from dataclasses import dataclass
 from typing import List
 
+from redis import Redis
+from redis import from_url as get_redis_from_url
+
+from operation_fluff.dog_finder import Dog, find_new_dogs
 from operation_fluff.emailer import email_dogs, email_error
-from operation_fluff.dog_finder import find_new_dogs, Dog
 from operation_fluff.texter import text_dogs
 
 
@@ -58,10 +61,12 @@ def send_dogs(dogs: List[Dog], config: Config) -> None:
             print(f"Failed to text dogs f{e}")
 
 
-def main() -> None:
+def main(redis_cache: Redis) -> None:
     config = load_config()
     try:
-        dogs = list(find_new_dogs(since_mins=config.time_between_runs))
+        dogs = list(
+            find_new_dogs(since_mins=config.time_between_runs, redis_cache=redis_cache)
+        )
         print(f"I found {len(dogs)} new dogs!")
         if dogs:
             print("Sending new dogs")
@@ -74,4 +79,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    main(get_redis_from_url(os.environ["REDIS_URL"]))

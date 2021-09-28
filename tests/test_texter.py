@@ -72,25 +72,25 @@ def test_text_dogs(mocker) -> None:
         call().messages.create(
             body="Mr. Charlie is a young Bernese Mountain Dog\nhttps://example.com/profile",
             from_="2025550135",
-            media_url="https://example.com/photo",
+            media_url=["https://example.com/photo"],
             to="2025550135",
         ),
         call().messages.create(
             body="Mr. Charlie is a young Bernese Mountain Dog\nhttps://example.com/profile",
             from_="2025550135",
-            media_url="https://example.com/photo",
+            media_url=["https://example.com/photo"],
             to="2025550117",
         ),
         call().messages.create(
             body="Jupiter is a young Newfoundland\nhttps://example.com/profile",
             from_="2025550135",
-            media_url="https://example.com/photo",
+            media_url=["https://example.com/photo"],
             to="2025550135",
         ),
         call().messages.create(
             body="Jupiter is a young Newfoundland\nhttps://example.com/profile",
             from_="2025550135",
-            media_url="https://example.com/photo",
+            media_url=["https://example.com/photo"],
             to="2025550117",
         ),
     ]

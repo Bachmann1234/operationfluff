@@ -3,7 +3,7 @@ import datetime
 import pytest
 from freezegun import freeze_time
 
-from operation_fluff.dog_finder import get_dogs, Dog, find_new_dogs
+from operation_fluff.dog_finder import Dog, find_new_dogs, get_dogs
 
 
 @pytest.mark.vcr()
