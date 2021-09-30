@@ -38,7 +38,7 @@ def format_dog(dog_to_format: Dict) -> Dog:
 
 
 @retry(HTTPError, tries=3, delay=1, backoff=2, jitter=1)
-def get_dogs(limit: int = 300) -> Generator[Dog, None, None]:
+def get_dogs(limit: int = 300) -> List[Dog]:
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) "
         "Gecko/20100101 Firefox/80.0",
@@ -49,7 +49,7 @@ def get_dogs(limit: int = 300) -> Generator[Dog, None, None]:
     }
     page = 0
     total_pages = 1
-
+    resulting_dogs = []
     while page != total_pages:
         page += 1
         params = {
@@ -72,7 +72,8 @@ def get_dogs(limit: int = 300) -> Generator[Dog, None, None]:
         result = response.json()["result"]
         total_pages = result["pagination"]["total_pages"]
         for animal in result.get("animals", []):
-            yield format_dog(animal["animal"])
+            resulting_dogs.append(format_dog(animal["animal"]))
+    return resulting_dogs
 
 
 def find_new_dogs(since_mins: int = 10, redis_cache: Redis = None) -> List[Dog]:

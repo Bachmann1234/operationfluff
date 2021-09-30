@@ -1,4 +1,5 @@
 import os
+import traceback
 from dataclasses import dataclass
 from typing import List
 
@@ -73,6 +74,8 @@ def main(redis_cache: Redis) -> None:
             send_dogs(dogs, config)
     except Exception as e:
         print(f"Failed to query/message dogs ({str(e)})")
+        print(e.__class__.__name__)
+        print(traceback.format_exc())
         email_error(
             str(e), config.sender, [config.admin_email], config.sendgrid_api_key
         )
